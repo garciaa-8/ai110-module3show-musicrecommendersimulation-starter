@@ -1,4 +1,4 @@
-from src.recommender import Song, UserProfile, Recommender
+from src.recommender import Song, UserProfile, Recommender, score_song, recommend_songs
 
 def make_small_recommender() -> Recommender:
     songs = [
@@ -59,3 +59,33 @@ def test_explain_recommendation_returns_non_empty_string():
     explanation = rec.explain_recommendation(user, song)
     assert isinstance(explanation, str)
     assert explanation.strip() != ""
+
+
+def test_score_song_returns_weighted_score_and_reasons():
+    user_prefs = {"genre": "rock", "mood": "intense", "energy": 0.9}
+    song = {"genre": "rock", "mood": "intense", "energy": 0.98}
+
+    score, reasons = score_song(user_prefs, song)
+
+    assert abs(score - 4.84) < 1e-9
+    assert reasons == [
+        "genre match (+2.0)",
+        "mood match (+1.0)",
+        "energy similarity (92%, +1.8/2.0)",
+    ]
+
+
+def test_recommend_songs_returns_top_k_sorted_with_explanations():
+    user_prefs = {"genre": "rock", "mood": "intense", "energy": 0.9}
+    songs = [
+        {"title": "Chill Lofi", "genre": "lofi", "mood": "chill", "energy": 0.4},
+        {"title": "Intense Rock", "genre": "rock", "mood": "intense", "energy": 0.9},
+        {"title": "Happy Pop", "genre": "pop", "mood": "happy", "energy": 0.7},
+    ]
+
+    recommendations = recommend_songs(user_prefs, songs, k=2)
+
+    assert len(recommendations) == 2
+    assert recommendations[0][0]["title"] == "Intense Rock"
+    assert recommendations[0][1] >= recommendations[1][1]
+    assert "genre match (+2.0)" in recommendations[0][2]
