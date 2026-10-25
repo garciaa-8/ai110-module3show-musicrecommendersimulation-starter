@@ -67,11 +67,11 @@ def test_score_song_returns_weighted_score_and_reasons():
 
     score, reasons = score_song(user_prefs, song)
 
-    assert abs(score - 4.84) < 1e-9
+    assert abs(score - 5.68) < 1e-9
     assert reasons == [
-        "genre match (+2.0)",
+        "genre match (+1.0)",
         "mood match (+1.0)",
-        "energy similarity (92%, +1.8/2.0)",
+        "energy similarity (92%, +3.7/4.0)",
     ]
 
 

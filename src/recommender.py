@@ -65,7 +65,7 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     reasons = []
 
     genre_matches = user_prefs["genre"].casefold() == song["genre"].casefold()
-    genre_points = 2.0 if genre_matches else 0.0
+    genre_points = 1.0 if genre_matches else 0.0
     score += genre_points
     reasons.append(f"genre {'match' if genre_matches else 'mismatch'} (+{genre_points:.1f})")
 
@@ -78,10 +78,10 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
         0.0,
         1.0 - abs(float(song["energy"]) - float(user_prefs["energy"])),
     )
-    energy_points = 2.0 * energy_similarity
+    energy_points = 4.0 * energy_similarity
     score += energy_points
     reasons.append(
-        f"energy similarity ({energy_similarity:.0%}, +{energy_points:.1f}/2.0)"
+        f"energy similarity ({energy_similarity:.0%}, +{energy_points:.1f}/4.0)"
     )
 
     return score, reasons

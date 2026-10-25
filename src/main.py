@@ -13,18 +13,28 @@ from .recommender import load_songs, recommend_songs
 
 
 def main() -> None:
-    songs = load_songs("data/songs.csv") 
+    songs = load_songs("data/songs.csv")
     print(f"Loaded songs: {len(songs)}")
 
-    # Starter example profile
-    user_prefs = {"genre": "pop", "mood": "happy", "energy": 0.8}
+    user_profiles = {
+        "High-Energy Pop": {"genre": "pop", "mood": "happy", "energy": 0.95},
+        "Chill Lofi": {"genre": "lofi", "mood": "chill", "energy": 0.35},
+        "Deep Intense Rock": {"genre": "rock", "mood": "intense", "energy": 0.95},
+        "Conflicting Rock/Chill": {"genre": "rock", "mood": "chill", "energy": 0.90},
+        "Unsupported Mood Edge Case": {"genre": "rock", "mood": "sad", "energy": 0.90},
+    }
 
-    recommendations = recommend_songs(user_prefs, songs, k=5)
-
-    print("\nTop recommendations:")
-    for rank, (song, score, explanation) in enumerate(recommendations, start=1):
-        print(f"\n{rank}. {song['title']}  |  Score: {score:.2f}/5.00")
-        print(f"   Reasons: {explanation}")
+    for profile_name, user_prefs in user_profiles.items():
+        recommendations = recommend_songs(user_prefs, songs, k=5)
+        print(f"\nProfile: {profile_name}")
+        print(
+            f"Preferences: genre={user_prefs['genre']}, mood={user_prefs['mood']}, "
+            f"energy={user_prefs['energy']:.2f}"
+        )
+        print("Top recommendations:")
+        for rank, (song, score, explanation) in enumerate(recommendations, start=1):
+            print(f"{rank}. {song['title']}  |  Score: {score:.2f}/6.00")
+            print(f"   Reasons: {explanation}")
 
 
 if __name__ == "__main__":
